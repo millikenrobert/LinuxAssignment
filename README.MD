@@ -1,4 +1,24 @@
-# Set the key for SSH access so that the server can be accessed locally
+# Linux Setup
+## Overview
+This document describes the processes that are required to setup the Udacity Catalog application on AWS Lightsail.
+
+##Version
+1.0 Initial submission for review
+
+##Compatibility
+The Linux server is setup with the required applications and packages.
+
+##Usage Notes
+Website can be access at [http://ec2-13-211-172-94.ap-southeast-2.compute.amazonaws.com/] [http://ec2-13-211-172-94.ap-southeast-2.compute.amazonaws.com/]
+
+The reviewer has been supplied with the local key. Connnection to the Server should be via
+*ssh -i ~/.ssh/keyPair.pem grader@13.211.172.94 -p 2200*
+
+
+
+# Step-by-step Setup
+
+## Set the key for SSH access so that the server can be accessed locally
 1. Copy key to .ssh
 `mv key.pem  ~/.ssh/keyPair.pem`
 2. Change the permissions
@@ -6,7 +26,7 @@
 3. Confirm the server can be accessed by
 `ssh -i ~/.ssh/keyPair.pem ubuntu@54.206.12.65`
 
-# Create the Grader user
+## Create the Grader user
 1. Add user (pw:graderpw)
 `sudo adduser grader`
 2. Add grader file
@@ -19,13 +39,13 @@
 `sudo su - grader`
 `sudo ls -al`
 
-# Update the packages
+## Update the packages
 1. Find the available package updates
 sudo apt-get update
 2. Upgrade the packages
 sudo apt-get upgrade
 
-# Update the firewall
+## Update the firewall
 1. Allow an exception in Lightsail for ssh 2200, deny 22 and add 123 (UDP)
 2. Change SSH port to 2200
 `sudo nano /etc/ssh/sshd_config`
@@ -47,17 +67,17 @@ sudo apt-get upgrade
 8. Confirm SSH does not work on Port 22, but does on 2200
 ` ssh -i ~/.ssh/keyPair.pem ubuntu@13.211.172.94 -p 2200`
 
-# Update the TZ to UTC
+## Update the TZ to UTC
 1. Change "none of the above" the "UTC"
 `sudo dpkg-reconfigure tzdata`
 
-# Install Apache
+## Install Apache
 1. Install the Apache package:
 `sudo apt-get install apache2`
 2. Check that http://13.211.172.94/ returns the Apache Website
 True!
 
-# Install WSGI
+## Install WSGI
 1. Install the libapache2-mod-wsgi package
 `sudo apt-get install libapache2-mod-wsgi python-dev`
 2. Enable wsgi
@@ -66,7 +86,7 @@ True!
 `sudo service apache2 start`
 
 
-# Install git
+## Install git
 1. Install the git package
 `sudo apt-get install git`
 2. Change the owner
@@ -79,7 +99,7 @@ True!
 `cd catalog`
 
 
-# Clone and modify my catalog project
+## Clone and modify my catalog project
 1. Create the directory to clone to
 `sudo git clone https://github.com/millikenrobert/catalog.git catalog`
 2. Create catalog.wsgi
@@ -98,7 +118,7 @@ application.secret_key = 'supersecretkey'
 `mv application.py __init__.py`
 
 
-# Install Virtual Environment
+## Install Virtual Environment
 1. Install pip
 `sudo apt-get install python-pip`
 2. Install VirtualEnv
@@ -110,7 +130,7 @@ application.secret_key = 'supersecretkey'
 5. Set permissions
 `sudo chmod -R 777 venv`
 
-# Install Packages
+## Install Packages
 1. Install all below packages
 `pip install Flask`
 `pip install sqlalchemy`
@@ -120,7 +140,7 @@ application.secret_key = 'supersecretkey'
 `pip install requests`
 
 
-# Add OAuth credentials in Google
+## Add OAuth credentials in Google
 1. Add new OAuth Credentials
 Authorized JavaScript: http://ec2-13-211-172-94.ap-southeast-2.compute.amazonaws.com
 Authorized JavaScript: http://13.211.172.94
@@ -131,7 +151,7 @@ Authorized redirect URIs: http://ec2-13-211-172-94.ap-southeast-2.compute.amazon
 
 
 
-# Create the config file for the virtual server
+## Create the config file for the virtual server
 1. Go to the config directory
 `sudo nano /etc/apache2/sites-available/catalog.conf'
 
@@ -166,13 +186,13 @@ And enter
 
 2. Enable virtual host
 
-#Setup for PostreSQL
+##Setup for PostreSQL
 1. Install Python PostgreSQL dependencies
 `sudo apt-get install libpq-dev python-dev`
 `sudo apt-get install postgresql postgresql-contrib`
 
 
-# Add the PostgresSQL user named catalog
+## Add the PostgresSQL user named catalog
 1. Switch to the postgres user
 `sudo su - postgres`
 2. Connect to the psql server
@@ -188,7 +208,7 @@ Pw: catalogpw123
 `\q`
 
 
-# Create the database
+## Create the database
 1. Create the catalog database as the Linux catalog user
 `CREATE DATABASE catalog WITH OWNER catalog;`
 `\c catalog`
@@ -197,7 +217,7 @@ Pw: catalogpw123
 `\q`
 
 
-# Update the DB references
+## Update the DB references
 1. Update PostgreSQL engine in "__init__.py" and "database_setup.py"
 engine = create_engine('postgresql://catalog:catalogPW617@localhost/catalog')
 
