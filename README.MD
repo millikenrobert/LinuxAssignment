@@ -4,6 +4,7 @@ This document describes the processes that are required to setup the Udacity Cat
 
 ## Version
 1.0 Initial submission for review
+1.1 Had to run `sudo apt-get dist-upgrade` to update
 
 ## Compatibility
 The Linux server is setup with the required applications and packages.
@@ -49,6 +50,7 @@ IP is 13.211.172.94
 * `sudo apt-get update`
 2. Upgrade the packages
 * `sudo apt-get upgrade`
+* `sudo apt-get dist-upgrade`
 
 ## Update the firewall
 1. Allow an exception in Lightsail for ssh 2200, deny 22 and add 123 (UDP)
