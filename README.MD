@@ -2,14 +2,14 @@
 ## Overview
 This document describes the processes that are required to setup the Udacity Catalog application on AWS Lightsail.
 
-##Version
+## Version
 1.0 Initial submission for review
 
-##Compatibility
+## Compatibility
 The Linux server is setup with the required applications and packages.
 
-##Usage Notes
-Website can be access at [http://ec2-13-211-172-94.ap-southeast-2.compute.amazonaws.com/] [http://ec2-13-211-172-94.ap-southeast-2.compute.amazonaws.com/]
+## Usage Notes
+Website can be access at [http://ec2-13-211-172-94.ap-southeast-2.compute.amazonaws.com/] (http://ec2-13-211-172-94.ap-southeast-2.compute.amazonaws.com/)
 
 The reviewer has been supplied with the local key. Connnection to the Server should be via
 *ssh -i ~/.ssh/keyPair.pem grader@13.211.172.94 -p 2200*
