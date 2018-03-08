@@ -159,7 +159,7 @@ Authorized redirect URIs: http://ec2-13-211-172-94.ap-southeast-2.compute.amazon
 
 ## Create the config file for the virtual server
 1. Go to the config directory
-* `sudo nano /etc/apache2/sites-available/catalog.conf'
+* `sudo nano /etc/apache2/sites-available/catalog.conf`
 
 And enter
 
@@ -192,7 +192,7 @@ And enter
 
 2. Enable virtual host
 
-##Setup for PostreSQL
+## Setup for PostreSQL
 1. Install Python PostgreSQL dependencies
 * `sudo apt-get install libpq-dev python-dev`
 * `sudo apt-get install postgresql postgresql-contrib`
@@ -224,9 +224,37 @@ Pw: catalogpw123
 
 
 ## Update the DB references
-1. Update PostgreSQL engine in "__init__.py" and "database_setup.py"
-engine = create_engine('postgresql://catalog:catalogPW617@localhost/catalog')
+1. Update PostgreSQL engine in "__init__.py" and "database_setup.py" and populateDb.py
+* engine = create_engine('postgresql://catalog:catalogPW617@localhost/catalog')
 
 
+## Reset the apache server
+1. Restart the apache server
+* `sudo service apache2 restart`
+
+# A review of the Rubrik - Sanity Check
+## User Management
+* Can you log into the server as the user grader using the submitted key? Yes, I have tested
+* Is remote login of the root user disabled? Yes, no root comes with Lightsail. Only the Ubuntu user and the Grader user exist.
+* Is the grader user given sudo access? Yes, grader has been added as a sudoer
+
+## Security
+* Is the firewall configured to only allow for SSH, HTTP, and NTP? Yes, both AWS and UFW have blocked all connections exceppt for 2200, 80 and 123. 22 has been denied.
+* Are users required to authenticate using RSA keys? Yes, SSH is enforced.
+* Are the applications up-to-date? Yes, Update and Upgrade has been completed
+* Is SSH hosted on non-default port? Yes, hosted on 2200.
+
+## Application Functionality
+* Is there a web server running on port 80? Yes, the url resonds to both the alias and ip.
+* Has the database server been configured to properly serve data? Yes, the website works.
+* Has the web server been configured to serve the Item Catalog application? Yes, catalog site is served.
+
+## Documentation
+Is a README file included in the GitHub repo containing all specified information? Yes!
 
 
+# References and third-party resources
+* Udacity course (www.udacity.com)
+* Amazon for getting keyGen pair done(https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html#ec2-launch-instance)
+* Ask Ubuntu where i locked myself out of sudo (https://askubuntu.com/)
+* Some areas i wasnt sure of the following helped (https://github.com/iliketomatoes)
