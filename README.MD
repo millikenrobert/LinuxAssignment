@@ -6,7 +6,7 @@
 3. Confirm the server can be accessed by
 `ssh -i ~/.ssh/keyPair.pem ubuntu@54.206.12.65`
 
-#Create the Grader user
+# Create the Grader user
 1. Add user (pw:graderpw)
 `sudo adduser grader`
 2. Add grader file
@@ -19,13 +19,13 @@
 `sudo su - grader`
 `sudo ls -al`
 
-#Update the packages
+# Update the packages
 1. Find the available package updates
 sudo apt-get update
 2. Upgrade the packages
 sudo apt-get upgrade
 
-#Update the firewall
+# Update the firewall
 1. Allow an exception in Lightsail for ssh 2200, deny 22 and add 123 (UDP)
 2. Change SSH port to 2200
 `sudo nano /etc/ssh/sshd_config`
@@ -47,17 +47,17 @@ sudo apt-get upgrade
 8. Confirm SSH does not work on Port 22, but does on 2200
 ` ssh -i ~/.ssh/keyPair.pem ubuntu@13.211.172.94 -p 2200`
 
-#Update the TZ to UTC
+# Update the TZ to UTC
 1. Change "none of the above" the "UTC"
 `sudo dpkg-reconfigure tzdata`
 
-#Install Apache
+# Install Apache
 1. Install the Apache package:
 `sudo apt-get install apache2`
 2. Check that http://13.211.172.94/ returns the Apache Website
 True!
 
-#Install WSGI
+# Install WSGI
 1. Install the libapache2-mod-wsgi package
 `sudo apt-get install libapache2-mod-wsgi python-dev`
 2. Enable wsgi
@@ -66,7 +66,7 @@ True!
 `sudo service apache2 start`
 
 
-#Install git
+# Install git
 1. Install the git package
 `sudo apt-get install git`
 2. Change the owner
@@ -79,7 +79,7 @@ True!
 `cd catalog`
 
 
-#Clone and modify my catalog project
+# Clone and modify my catalog project
 1. Create the directory to clone to
 `sudo git clone https://github.com/millikenrobert/catalog.git catalog`
 2. Create catalog.wsgi
@@ -98,7 +98,7 @@ application.secret_key = 'supersecretkey'
 `mv application.py __init__.py`
 
 
-#Install Virtual Environment
+# Install Virtual Environment
 1. Install pip
 `sudo apt-get install python-pip`
 2. Install VirtualEnv
@@ -110,7 +110,7 @@ application.secret_key = 'supersecretkey'
 5. Set permissions
 `sudo chmod -R 777 venv`
 
-#Install Packages
+# Install Packages
 1. Install all below packages
 `pip install Flask`
 `pip install sqlalchemy`
@@ -120,7 +120,7 @@ application.secret_key = 'supersecretkey'
 `pip install requests`
 
 
-#Add OAuth credentials in Google
+# Add OAuth credentials in Google
 1. Add new OAuth Credentials
 Authorized JavaScript: http://ec2-13-211-172-94.ap-southeast-2.compute.amazonaws.com
 Authorized JavaScript: http://13.211.172.94
@@ -131,116 +131,18 @@ Authorized redirect URIs: http://ec2-13-211-172-94.ap-southeast-2.compute.amazon
 
 
 
-#Create the config file for the virtual server
+# Create the config file for the virtual server
 1. Go to the config directory
 `sudo nano /etc/apache2/sites-available/catalog.conf'
-2. Enable virtual host
 
-#Setup for PostreSQL
-1. Install Python PostgreSQL dependencies
-`sudo apt-get install libpq-dev python-dev`
-`sudo apt-get install postgresql postgresql-contrib`
+And enter
 
-
-#Add the PostgresSQL user named catalog
-1. Switch to the postgres user
-`sudo su - postgres`
-2. Connect to the psql server
-`psql`
-3. Create the user
-`CREATE ROLE catalog WITH LOGIN;`
-4. Set catalog role to create databases
-`ALTER ROLE catalog CREATEDB;`
-5. Set the catalog PW
-`\password catalog`
-Pw: catalogpw123
-6. Exit psql
-`\q`
-
-
-#Create the database
-1. Create the catalog database as the Linux catalog user
-`CREATE DATABASE catalog WITH OWNER catalog;`
-`\c catalog`
-`REVOKE ALL ON SCHEMA public FROM public;`
-`GRANT ALL ON SCHEMA public TO catalog;`
-`\q`
-
-
-#Update the DB references
-1. Update PostgreSQL engine in "__init__.py" and "database_setup.py"
-engine = create_engine('postgresql://catalog:catalogPW617@localhost/catalog')
-
-
-
-
-
-
-
-
-
-2. Check db exists
-`psqsl`
-`\l`
-
-
-
-
-
-
-`cd /var/www/catalog/`
-
-`sudo chown -R grader:grader venv/`
-
-
-
-
-
-
-
-
-2. Rename the application.py to __init__.py
-`mv application.py __init__.py`
-3. Clear the app.run in __init__.py
-Change app.run(host='0.0.0.0', port=8000) to app.run()
-
-
-
-
-
-
-
-
-
-
-#Install PostgreSQL
-1. Install PostgreSQL
-`sudo apt-get install postgresql`
-
-
-
-
-
-#Create system user called catalog
-1. Add catalog user
-`sudo adduser catalog`
-Pw: catalogpw123
-2. Copy the grader to new file catalog
-`sudo cp /etc/sudoers.d/grader /etc/sudoers.d/catalog`
-3. Modify the file and update user name to catalog
-'sudo visudo -f /etc/sudoers.d/catalog'
-Update to: catalog ALL=(ALL:ALL) ALL
-
-
-
-
-
-With the below:
+```
 
 <VirtualHost *:80>
-    ServerName 13.211.86.212
-    ServerAlias ec2-13-211-86-212.ap-southeast-2.compute.amazonaws.com
-    ServerAdmin admin@13.211.86.212
+    ServerName 13.211.172.94
+    ServerAlias http://ec2-13-211-172-94.ap-southeast-2.compute.amazonaws.com/
+    ServerAdmin admin@13-211-172-94
     WSGIDaemonProcess catalog python-path=/var/www/catalog:/var/www/catalog/venv/lib/python2.7/site-packages
     WSGIProcessGroup catalog
     WSGIScriptAlias / /var/www/catalog/catalog.wsgi
@@ -258,36 +160,46 @@ With the below:
     CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 
-3. Reload Apache host
-`sudo service apache2 reload`
-4. Enable the virtual host:
-`sudo a2ensite catalog`
-
-#Create the flask application
-1. Create the catalog.wsgi file
-
-Insert
-~~~
-import sys
-import logging
-logging.basicConfig(stream=sys.stderr)
-sys.path.insert(0, "/var/www/catalog/")
-
-from catalog import app as application
-application.secret_key = 'supersecretkey'
-
-~~~~
-2. Disable the previous config file
-`sudo a2dissite 000-default.conf`
-3. Reload
-`sudo service apache2 reload`
 
 
+```
+
+2. Enable virtual host
+
+#Setup for PostreSQL
+1. Install Python PostgreSQL dependencies
+`sudo apt-get install libpq-dev python-dev`
+`sudo apt-get install postgresql postgresql-contrib`
 
 
-980237270317-5uvlf6g5b7erdcf8o2fldcvup2nf3jle.apps.googleusercontent.com
-HV1y1NuhOvF9niR_cBTusWXM
+# Add the PostgresSQL user named catalog
+1. Switch to the postgres user
+`sudo su - postgres`
+2. Connect to the psql server
+`psql`
+3. Create the user
+`CREATE ROLE catalog WITH LOGIN;`
+4. Set catalog role to create databases
+`ALTER ROLE catalog CREATEDB;`
+5. Set the catalog PW
+`\password catalog`
+Pw: catalogpw123
+6. Exit psql
+`\q`
 
+
+# Create the database
+1. Create the catalog database as the Linux catalog user
+`CREATE DATABASE catalog WITH OWNER catalog;`
+`\c catalog`
+`REVOKE ALL ON SCHEMA public FROM public;`
+`GRANT ALL ON SCHEMA public TO catalog;`
+`\q`
+
+
+# Update the DB references
+1. Update PostgreSQL engine in "__init__.py" and "database_setup.py"
+engine = create_engine('postgresql://catalog:catalogPW617@localhost/catalog')
 
 
 
